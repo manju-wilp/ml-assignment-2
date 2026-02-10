@@ -129,3 +129,38 @@ def create_preprocessor(numeric_features, categorical_features, scale=True):
     
     return preprocessor
 
+def main():
+    """Main training pipeline."""
+    print("="*60)
+    print("AIRLINE PASSENGER SATISFACTION - MODEL TRAINING")
+    print("="*60)
+    
+    # Load and preprocess
+    X_train, X_test, y_train, y_test, feature_schema, use_class_weight = load_and_preprocess_data()
+    
+    # Train all models
+    results_df = train_and_evaluate_models(X_train, X_test, y_train, y_test, feature_schema, use_class_weight)
+    
+    # Display results
+    print("\n" + "="*60)
+    print("FINAL RESULTS - ALL MODELS")
+    print("="*60)
+    print(results_df.to_string(index=False))
+    
+    # Save results
+    results_path = MODEL_DIR / "metrics_comparison.csv"
+    results_df.to_csv(results_path, index=False)
+    print(f"\nResults saved to {results_path}")
+    
+    print("\n" + "="*60)
+    print("TRAINING COMPLETE!")
+    print("="*60)
+    print(f"All models saved in: {MODEL_DIR}")
+    print(f"Sample test CSV: {BASE_DIR / 'sample_test.csv'}")
+    print(f"Feature schema: {MODEL_DIR / 'feature_schema.json'}")
+
+
+if __name__ == "__main__":
+    main()
+
+
