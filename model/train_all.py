@@ -129,6 +129,111 @@ def create_preprocessor(numeric_features, categorical_features, scale=True):
     
     return preprocessor
 
+
+def compute_metrics(y_true, y_pred, y_proba):
+    """
+    Compute all 6 required metrics.
+    
+    Returns:
+        dict with Accuracy, AUC, Precision, Recall, F1, MCC
+    """
+    return {
+        'Accuracy': accuracy_score(y_true, y_pred),
+        'AUC': roc_auc_score(y_true, y_proba),
+        'Precision': precision_score(y_true, y_pred, average='binary', zero_division=0),
+        'Recall': recall_score(y_true, y_pred, average='binary', zero_division=0),
+        'F1': f1_score(y_true, y_pred, average='binary', zero_division=0),
+        'MCC': matthews_corrcoef(y_true, y_pred)
+    }
+
+
+def train_and_evaluate_models(X_train, X_test, y_train, y_test, feature_schema, use_class_weight):
+    """
+    Train all 6 models and evaluate on test set.
+    
+    Returns:
+        DataFrame with all metrics
+    """
+    numeric_features = feature_schema['numeric_features']
+    categorical_features = feature_schema['categorical_features']
+    
+    class_weight_param = 'balanced' if use_class_weight else None
+    
+    # Define models: (name, model, needs_scaling)
+    model_configs = [
+        ('Logistic_Regression', 
+         LogisticRegression(random_state=RANDOM_STATE, max_iter=1000, class_weight=class_weight_param),
+         True),
+        
+        ('Decision_Tree',
+         DecisionTreeClassifier(random_state=RANDOM_STATE, class_weight=class_weight_param),
+         False),
+        
+        ('KNN',
+         KNeighborsClassifier(n_neighbors=5),
+         True),
+        
+        ('Naive_Bayes',
+         GaussianNB(),
+         True),  # StandardScaler helps GaussianNB
+        
+        ('Random_Forest',
+         RandomForestClassifier(random_state=RANDOM_STATE, n_estimators=100, class_weight=class_weight_param),
+         False),
+        
+        ('XGBoost',
+         XGBClassifier(random_state=RANDOM_STATE, eval_metric='logloss', use_label_encoder=False),
+         False)
+    ]
+    
+    results = []
+    
+    for model_name, model, needs_scaling in model_configs:
+        print(f"\n{'='*60}")
+        print(f"Training {model_name}...")
+        print(f"{'='*60}")
+        
+        # Create preprocessor
+        preprocessor = create_preprocessor(numeric_features, categorical_features, scale=needs_scaling)
+        
+        # Create full pipeline
+        pipeline = Pipeline(steps=[
+            ('preprocessor', preprocessor),
+            ('classifier', model)
+        ])
+        
+        # Train
+        pipeline.fit(X_train, y_train)
+        
+        # Predict
+        y_pred = pipeline.predict(X_test)
+        y_proba = pipeline.predict_proba(X_test)[:, 1]
+        
+        # Compute metrics
+        metrics = compute_metrics(y_test, y_pred, y_proba)
+        metrics['Model'] = model_name
+        
+        print(f"Results for {model_name}:")
+        for metric, value in metrics.items():
+            if metric != 'Model':
+                print(f"  {metric}: {value:.4f}")
+        
+        results.append(metrics)
+        
+        # Save model
+        model_path = MODEL_DIR / f"{model_name}.pkl"
+        joblib.dump(pipeline, model_path)
+        print(f"Model saved to {model_path}")
+    
+    # Create results DataFrame
+    results_df = pd.DataFrame(results)
+    # Reorder columns
+    results_df = results_df[['Model', 'Accuracy', 'AUC', 'Precision', 'Recall', 'F1', 'MCC']]
+    # Sort by F1 descending
+    results_df = results_df.sort_values('F1', ascending=False).reset_index(drop=True)
+    
+    return results_df
+
 def main():
     """Main training pipeline."""
     print("="*60)
@@ -162,5 +267,6 @@ def main():
 
 if __name__ == "__main__":
     main()
+
 
 
