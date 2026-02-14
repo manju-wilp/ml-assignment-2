@@ -293,11 +293,15 @@ if data_loaded:
             # Prediction Mode - show predictions
             st.subheader("🔮 Predictions")
             
+            # Calculate confidence for the predicted class
+            # If prediction is 1 (Benign), use y_prob; if 0 (Malignant), use 1 - y_prob
+            prediction_confidence = np.where(y_pred == 1, y_prob, 1 - y_prob)
+            
             predictions_df = pd.DataFrame({
                 "Row": range(1, len(y_pred) + 1),
                 "Prediction (0=Malignant, 1=Benign)": y_pred,
                 "Predicted Class": [target_names[p] for p in y_pred],
-                "Confidence (Benign)": [f"{p:.4f}" for p in y_prob]
+                "Prediction Confidence": [f"{p:.4f}" for p in prediction_confidence]
             })
             
             st.dataframe(predictions_df, width="stretch", hide_index=True)
@@ -309,7 +313,7 @@ if data_loaded:
                 st.metric("Predicted Malignant", int((y_pred == 0).sum()))
             with col2:
                 st.metric("Predicted Benign", int((y_pred == 1).sum()))
-                st.metric("Avg Confidence", f"{np.mean(y_prob):.4f}")
+                st.metric("Avg Confidence", f"{np.mean(prediction_confidence):.4f}")
             
             # Download predictions
             st.markdown("---")
