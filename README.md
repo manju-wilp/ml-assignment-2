@@ -1,7 +1,9 @@
 # Breast Cancer Classification - ML Assignment 2
 
 **Name**: Manjunath S
+
 **BITS ID**: 2025AA05935
+
 **Date**: 14-02-2026
 
 ## 1. Problem Statement
@@ -52,12 +54,12 @@ Features are computed from a digitized image of a fine needle aspirate (FNA) of 
 
 | ML Model Name                      | Observation about model performance                                                                                                                                                                                                                                                                                                                            |
 | ---------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Logistic Regression**      | Achieved the**highest accuracy (98.25%)** and best overall performance across all metrics. <br />The linear decision boundary works exceptionally well on this dataset because the features (after scaling) <br />are largely linearly separable. Its high AUC (0.9954) confirms excellent discrimination between malignant and benign classes.          |
-| **Decision Tree**            | Showed the**lowest performance** among all models (accuracy 91.23%, MCC 0.8174). <br />Decision trees are prone to overfitting and create axis-aligned splits that may not capture the smooth class boundaries in this dataset. <br />The relatively low recall (0.9028) means it misses more malignant cases, which is concerning in a medical context. |
+| **Logistic Regression**      | Achieved the **highest accuracy (98.25%)** and best overall performance across all metrics. <br />The linear decision boundary works exceptionally well on this dataset because the features (after scaling) <br />are largely linearly separable. Its high AUC (0.9954) confirms excellent discrimination between malignant and benign classes.          |
+| **Decision Tree**            | Showed the **lowest performance** among all models (accuracy 91.23%, MCC 0.8174). <br />Decision trees are prone to overfitting and create axis-aligned splits that may not capture the smooth class boundaries in this dataset. <br />The relatively low recall (0.9028) means it misses more malignant cases, which is concerning in a medical context. |
 | **kNN**                      | Performed well with 95.61% accuracy. KNN benefits from feature scaling (StandardScaler) and works effectively in <br />the 30-dimensional feature space. Its non-parametric nature allows it to capture complex decision boundaries without assumptions <br />about data distribution.                                                                         |
-| **Naive Bayes**              | Achieved moderate accuracy (92.98%) but a notably**high AUC (0.9868)**, indicating strong probabilistic ranking ability even though <br />hard predictions are less accurate. The conditional independence assumption is partially violated in this dataset <br />(many features are correlated), limiting its classification accuracy.                  |
-| **Random Forest (Ensemble)** | Matched kNN in accuracy (95.61%) with a**very high AUC (0.9939)**, second only to Logistic Regression. <br />The ensemble of decision trees effectively reduces variance and overfitting compared to a single Decision Tree, <br />dramatically improving performance (from 91.23% to 95.61%).                                                           |
-| **XGBoost (Ensemble)**       | Also achieved 95.61% accuracy with the**highest recall (0.9861)** among non-LR models, meaning it correctly identifies the <br />most malignant cases. XGBoost's gradient boosting mechanism and built-in regularization make it a strong and robust classifier. <br />Its AUC of 0.9901 confirms excellent ranking capability.                          |
+| **Naive Bayes**              | Achieved moderate accuracy (92.98%) but a notably **high AUC (0.9868)**, indicating strong probabilistic ranking ability even though <br />hard predictions are less accurate. The conditional independence assumption is partially violated in this dataset <br />(many features are correlated), limiting its classification accuracy.                  |
+| **Random Forest (Ensemble)** | Matched kNN in accuracy (95.61%) with a **very high AUC (0.9939)**, second only to Logistic Regression. <br />The ensemble of decision trees effectively reduces variance and overfitting compared to a single Decision Tree, <br />dramatically improving performance (from 91.23% to 95.61%).                                                           |
+| **XGBoost (Ensemble)**       | Also achieved 95.61% accuracy with the **highest recall (0.9861)** among non-LR models, meaning it correctly identifies the <br />most malignant cases. XGBoost's gradient boosting mechanism and built-in regularization make it a strong and robust classifier. <br />Its AUC of 0.9901 confirms excellent ranking capability.                          |
 
 ### Key Insights
 
@@ -67,3 +69,4 @@ Features are computed from a digitized image of a fine needle aspirate (FNA) of 
 4. **Feature scaling** is critical - KNN and Logistic Regression benefit greatly from StandardScaler normalization.
 
 ---
+
